@@ -1,4 +1,5 @@
 import { GithubContext } from "./githubContext";
+import { BasicError } from "./githubSchemas";
 
 const baseUrl = "https://api.github.com";
 
@@ -31,8 +32,7 @@ export async function githubFetch<
   TPathParams
 >): Promise<TData> {
   const response = await window.fetch(
-    `${baseUrl}
-    ${resolveUrl(url, queryParams, pathParams)}`,
+    `${baseUrl}${resolveUrl(url, queryParams, pathParams)}`,
     {
       method: method.toUpperCase(),
       body: body ? JSON.stringify(body) : undefined,
@@ -43,8 +43,18 @@ export async function githubFetch<
     }
   );
   if (!response.ok) {
-    // TODO validate & parse the error to fit the generated error types
-    throw new Error("Network response was not ok");
+    let payload: BasicError;
+    try {
+      payload = await response.json();
+    } catch {
+      throw new Error("Network response was not ok");
+    }
+
+    if (typeof payload === "object") {
+      throw payload;
+    } else {
+      throw new Error("Network response was not ok");
+    }
   }
   return await response.json();
 }
