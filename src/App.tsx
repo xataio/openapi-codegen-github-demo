@@ -13,9 +13,15 @@ function App() {
 }
 
 function Users() {
-  const { data, error, isLoading } = useSearchUsers({
-    queryParams: { q: "fabien" },
-  });
+  const [q, setQ] = useState("");
+  const { data, error, isLoading } = useSearchUsers(
+    {
+      queryParams: { q },
+    },
+    {
+      enabled: Boolean(q),
+    }
+  );
 
   if (error) {
     return (
@@ -26,16 +32,19 @@ function Users() {
     );
   }
 
-  if (isLoading) {
-    return <div>Loading…</div>;
-  }
-
   return (
-    <ul>
-      {data?.items.map((item) => (
-        <li key={item.id}>{item.login}</li>
-      ))}
-    </ul>
+    <div>
+      <input value={q} onChange={(e) => setQ(e.target.value)} />
+      {isLoading ? (
+        <div>Loading…</div>
+      ) : (
+        <ul>
+          {data?.items.map((item) => (
+            <li key={item.id}>{item.login}</li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
