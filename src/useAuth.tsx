@@ -1,3 +1,4 @@
+import { Box, Button, Input, Link, Text } from "@chakra-ui/react";
 import React, { createContext, useContext, useState } from "react";
 import { useQueryClient } from "react-query";
 
@@ -16,7 +17,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       {token ? (
         <>
           {children}
-          <button
+          <Button
+            position="absolute"
+            top="2"
+            right="2"
+            colorScheme="teal"
             onClick={() => {
               setToken(null);
               localStorage.removeItem(key);
@@ -24,11 +29,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               queryClient.invalidateQueries([]);
             }}
           >
-            Clear token
-          </button>
+            Disconnect
+          </Button>
         </>
       ) : (
-        <div>
+        <Box
+          width="xl"
+          borderRadius="md"
+          borderColor="teal.400"
+          borderWidth="thin"
+          margin="1"
+          padding="4"
+        >
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -36,13 +48,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               localStorage.setItem(key, draftToken);
             }}
           >
-            <p>Please enter a personal access token</p>
-            <input
+            <Text>Please enter a github personal access token</Text>
+            <Input
+              autoFocus
+              marginY="2"
+              placeholder="my token"
               value={draftToken}
               onChange={(e) => setDraftToken(e.target.value)}
-            ></input>
+            ></Input>
+            <Link fontSize="sm" href="https://github.com/settings/tokens">
+              https://github.com/settings/tokens
+            </Link>
           </form>
-        </div>
+        </Box>
       )}
     </authContext.Provider>
   );
