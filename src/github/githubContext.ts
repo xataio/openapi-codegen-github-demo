@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import type { QueryKey, UseQueryOptions } from "react-query";
+import { useToken } from "../useAuth";
 import { QueryOperation } from "./githubComponents";
 
 export type GithubContext = {
@@ -6,7 +8,9 @@ export type GithubContext = {
     /**
      * Headers to inject in the fetcher
      */
-    headers?: {};
+    headers?: {
+      authorization?: string;
+    };
     /**
      * Query params to inject in the fetcher
      */
@@ -36,14 +40,22 @@ export function useGithubContext<
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey
 >(
-  _queryOptions?: Omit<
+  queryOptions?: Omit<
     UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
     "queryKey" | "queryFn"
   >
 ): GithubContext {
+  const token = useToken();
+
   return {
-    fetcherOptions: {},
-    queryOptions: {},
+    fetcherOptions: {
+      headers: {
+        authorization: token ? `Bearer ${token}` : undefined,
+      },
+    },
+    queryOptions: {
+      enabled: token !== null && (queryOptions?.enabled ?? true),
+    },
     queryKeyFn: (operation) => {
       const queryKey: unknown[] = hasPathParams(operation)
         ? operation.path

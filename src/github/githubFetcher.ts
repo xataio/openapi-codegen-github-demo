@@ -14,7 +14,7 @@ export type GithubFetcherOptions<TBody, THeaders, TQueryParams, TPathParams> = {
 
 export async function githubFetch<
   TData,
-  TBody extends {} | undefined,
+  TBody extends {} | undefined | null,
   THeaders extends {},
   TQueryParams extends {},
   TPathParams extends {}

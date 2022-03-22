@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider, useQueryClient } from "react-query";
 import { useSearchUsers } from "./github/githubComponents";
+import { AuthProvider } from "./useAuth";
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Users />
+      <AuthProvider>
+        <Users />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
