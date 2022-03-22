@@ -1,3 +1,4 @@
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
   Alert,
   AlertIcon,
@@ -44,10 +45,17 @@ function Users() {
 
   if (error) {
     return (
-      <Alert status="error">
+      <Alert status="error" maxWidth="lg" margin="1">
         <AlertIcon />
         <Text>{error.message}</Text>
-        <Link href={error.documentation_url}>Documentation</Link>
+        <Link
+          href={error.documentation_url}
+          isExternal
+          color="red.900"
+          marginLeft="1"
+        >
+          <ExternalLinkIcon />
+        </Link>
       </Alert>
     );
   }
